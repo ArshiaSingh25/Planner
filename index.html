@@ -253,6 +253,15 @@
             });
             const [startDate] = useState(() => getStartDate());
 
+            const resetStartDate = () => {
+                if (window.confirm("Reset start date to today? This will remove all carry-over tasks.")) {
+                    const d = new Date();
+                    d.setHours(0,0,0,0);
+                    localStorage.setItem('cs6910_start_date', d.toISOString());
+                    window.location.reload();
+                }
+            };
+
             useEffect(() => {
                 localStorage.setItem('cs6910_coder_v2', JSON.stringify(completedTasks));
             }, [completedTasks]);
@@ -294,7 +303,15 @@
                                 <div className="w-3 h-3 rounded-full bg-[#222]"></div>
                                 <div className="w-3 h-3 rounded-full bg-[#222]"></div>
                             </div>
-                            <div className="text-[10px] text-gray-500 tracking-widest">EST_COMPLETION: 2026-06-26</div>
+                            <div className="flex gap-4 items-center">
+                                <button 
+                                    onClick={resetStartDate}
+                                    className="text-[9px] text-gray-600 hover:text-red-500 transition-colors cursor-pointer uppercase tracking-widest border border-[#222] px-2 py-1 bg-transparent hover:border-red-900"
+                                >
+                                    [RESET_CLOCK]
+                                </button>
+                                <div className="text-[10px] text-gray-500 tracking-widest">EST_COMPLETION: 2026-06-26</div>
+                            </div>
                         </div>
                         <h1 className="text-2xl font-bold mb-2 tracking-tighter">CS6910_STUDY_PLAN.exe</h1>
                         <p className="text-gray-500 text-sm mb-6 leading-relaxed uppercase tracking-tight">{PLAN_DATA.summary}</p>
