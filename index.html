@@ -3,130 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deep Learning Mastery | CS6910</title>
+    <title>Study Planner | Deep Learning</title>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --accent: #00f2ff;
-            --accent-glow: rgba(0, 242, 255, 0.3);
-            --bg: #030712;
-            --card-bg: rgba(17, 24, 39, 0.7);
-            --border: rgba(255, 255, 255, 0.1);
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #38bdf8;
+            --text-main: #f1f5f9;
+            --text-sub: #94a3b8;
         }
 
         body { 
             background-color: var(--bg); 
-            color: #f8fafc; 
+            color: var(--text-main); 
             font-family: 'Outfit', sans-serif;
             overflow-x: hidden;
+            margin: 0;
         }
 
         .mono { font-family: 'JetBrains Mono', monospace; }
 
-        /* Animated Background Mesh */
-        .bg-mesh {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: 
-                radial-gradient(circle at 0% 0%, rgba(0, 242, 255, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(147, 51, 234, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 0%, var(--bg) 100%);
-        }
-
-        .bg-grid {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background-image: linear-gradient(var(--border) 1px, transparent 1px),
-                              linear-gradient(90deg, var(--border) 1px, transparent 1px);
-            background-size: 50px 50px;
-            opacity: 0.2;
-            mask-image: radial-gradient(circle at center, black, transparent 80%);
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
+        /* Smooth Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { 
-            background: #1f2937; 
+            background: #334155; 
             border-radius: 10px;
         }
-        ::-webkit-scrollbar-thumb:hover { background: #374151; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-        /* Glassmorphism */
-        .glass {
+        /* Soft Cards */
+        .card {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
         }
 
-        .glass-hover:hover {
-            border-color: rgba(0, 242, 255, 0.3);
-            box-shadow: 0 0 20px var(--accent-glow);
-            transform: translateY(-2px);
+        .card-hover:hover {
+            transform: translateY(-4px);
+            border-color: rgba(56, 189, 248, 0.2);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
         }
 
-        /* Animations */
-        @keyframes scanline {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
-        }
-
-        .scanline {
-            width: 100%;
+        /* Progress Bar */
+        .progress-bar {
             height: 10px;
-            background: linear-gradient(to bottom, transparent, var(--accent-glow), transparent);
-            position: absolute;
-            opacity: 0.1;
-            animation: scanline 8s linear infinite;
+            background: #334155;
+            border-radius: 5px;
+            overflow: hidden;
         }
-
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 10px var(--accent-glow); }
-            50% { box-shadow: 0 0 20px var(--accent-glow); }
-        }
-
-        .glow-pulse {
-            animation: pulse-glow 3s infinite;
-        }
-
-        .task-row {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .task-row:hover {
-            background: rgba(255, 255, 255, 0.03);
-            padding-left: 1rem;
-        }
-
         .progress-fill {
-            transition: width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-            background: linear-gradient(90deg, #00f2ff, #7000ff);
-            box-shadow: 0 0 15px var(--accent-glow);
+            height: 100%;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            border-radius: 5px;
+            transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         /* Custom Checkbox */
         input[type="checkbox"] {
             appearance: none;
-            width: 18px;
-            height: 18px;
-            border: 2px solid var(--border);
-            border-radius: 4px;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #475569;
+            border-radius: 6px;
             cursor: pointer;
             position: relative;
             transition: all 0.2s;
+            flex-shrink: 0;
         }
 
         input[type="checkbox"]:checked {
@@ -137,45 +87,100 @@
         input[type="checkbox"]:checked::after {
             content: '✓';
             position: absolute;
-            color: #000;
-            font-size: 12px;
-            font-weight: bold;
+            color: #0f172a;
+            font-size: 14px;
+            font-weight: 800;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
         }
 
-        .nav-btn {
-            position: relative;
-            overflow: hidden;
+        /* Navigation Buttons */
+        .nav-link {
+            padding: 10px 24px;
+            border-radius: 12px;
+            transition: all 0.2s;
+            font-weight: 600;
+            color: var(--text-sub);
+        }
+        .nav-link.active {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent);
         }
 
-        .nav-btn.active::after {
+        /* Cat Animation */
+        @keyframes catRun {
+            0% { transform: translateX(-150px); }
+            100% { transform: translateX(calc(100vw + 150px)); }
+        }
+
+        .cat-container {
+            position: fixed;
+            bottom: 20px;
+            z-index: 50;
+            animation: catRun 15s linear infinite;
+            pointer-events: none;
+        }
+
+        .cat-body {
+            pointer-events: auto;
+            cursor: pointer;
+            width: 80px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+        }
+
+        /* Speech Bubble */
+        .speech-bubble {
+            position: absolute;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            color: #1e293b;
+            padding: 12px 18px;
+            border-radius: 18px;
+            font-size: 13px;
+            font-weight: 600;
+            width: 200px;
+            text-align: center;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .speech-bubble::after {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--accent);
-            box-shadow: 0 0 10px var(--accent);
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 10px solid transparent;
+            border-top-color: white;
+        }
+        .speech-bubble.visible {
+            opacity: 1;
+        }
+
+        .task-item {
+            transition: all 0.2s;
+        }
+        .task-item:hover {
+            background: rgba(255, 255, 255, 0.03);
         }
     </style>
 </head>
 <body>
-    <div class="bg-mesh"></div>
-    <div class="bg-grid"></div>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useMemo } = React;
+        const { useState, useEffect, useMemo, useRef } = React;
 
         const PLAN_DATA = {
-            "summary": "90-day intensive: Deep Learning. 4 tasks/day. Theory, Math, Code, and Research.",
+            "summary": "Your 90-day roadmap to Deep Learning mastery. One day at a time, you've got this! ✨",
             "weeks": [
                 {
-                    "week": "WEEK_01",
-                    "theme": "FOUNDATIONS_AND_NEURONS",
+                    "week": "Week 01",
+                    "theme": "Foundations & Neurons",
                     "days": [
                         { "day": 0, "tasks": ["Watch: CS6910 L1 - History of AI", "Watch: CS6910 L2 - The Perceptron", "Do Math: Derive Perceptron Update Rule", "Code: Implement Perceptron in NumPy"] },
                         { "day": 1, "tasks": ["Watch: CS6910 L3 - Sigmoid Neurons", "Do Math: Derive Sigmoid Derivative", "Visual: Plot Activations in Matplotlib", "Code: Write SigmoidNeuron.train()"] },
@@ -187,8 +192,8 @@
                     ]
                 },
                 {
-                    "week": "WEEK_02",
-                    "theme": "BACKPROP_MASTERY",
+                    "week": "Week 02",
+                    "theme": "Backprop Mastery",
                     "days": [
                         { "day": 7, "tasks": ["Watch: CS6910 L6 - Backprop General Graphs", "Do Math: Derive Hidden Layer Gradients", "Code: Implement N-layer Backprop", "Read: Matrix Calculus for DL (Parr)"] },
                         { "day": 8, "tasks": ["Watch: CS6910 L7-L8 - Vectorization", "Do Math: Convert scalar backprop to Matrix", "Code: Refactor NumPy FFNN for Vectors", "Visual: Graph Vectorization Speedup"] },
@@ -200,8 +205,8 @@
                     ]
                 },
                 {
-                    "week": "WEEK_03",
-                    "theme": "OPTIMIZATION_DYNAMICS",
+                    "week": "Week 03",
+                    "theme": "Optimization Dynamics",
                     "days": [
                         { "day": 14, "tasks": ["Watch: CS6910 L10 - Momentum GD", "Do Math: Prove Velocity averaging logic", "Code: Implement Momentum-SGD", "Visual: SGD vs Momentum on Ravine surface"] },
                         { "day": 15, "tasks": ["Watch: CS6910 L11 - Nesterov (NAG)", "Do Math: NAG Look-ahead vs Momentum", "Code: Implement NAG in NumPy", "Visual: Animate NAG corrective path"] },
@@ -213,8 +218,8 @@
                     ]
                 },
                 {
-                    "week": "WEEK_04",
-                    "theme": "REGULARIZATION_&_INIT",
+                    "week": "Week 04",
+                    "theme": "Regularization & Init",
                     "days": [
                         { "day": 21, "tasks": ["Watch: CS6910 L15 - Dropout", "Code: Implement Inverted Dropout", "Do Math: Dropout as Ensemble Proof", "Visual: Training vs Val Loss Plot"] },
                         { "day": 22, "tasks": ["Watch: CS6910 L16 - Data Augmentation", "Code: Random Crops/Flips (OpenCV)", "Read: Label Smoothing technique", "Write Blog: 'Fighting Overfitting'"] },
@@ -226,8 +231,8 @@
                     ]
                 },
                 {
-                    "week": "WEEK_05",
-                    "theme": "CNN_FUNDAMENTALS",
+                    "week": "Week 05",
+                    "theme": "CNN Fundamentals",
                     "days": [
                         { "day": 28, "tasks": ["Watch: CS6910 L19 - Convolutions", "Do Math: Calculate Conv Output dims", "Code: Implement 2D Conv (NumPy)", "Visual: Apply Sobel Filters to images"] },
                         { "day": 29, "tasks": ["Watch: CS6910 L20 - Pooling", "Do Math: Prove Translation Invariance", "Code: im2col Vectorized Conv", "Visual: Feature Map Visualization"] },
@@ -239,8 +244,8 @@
                     ]
                 },
                 {
-                    "week": "WEEK_06",
-                    "theme": "ADVANCED_CV",
+                    "week": "Week 06",
+                    "theme": "Advanced CV",
                     "days": [
                         { "day": 35, "tasks": ["Watch: Inception & GoogLeNet", "Do Math: 1x1 Conv param reduction", "Code: Implement Inception Module", "Visual: GoogLeNet Graph Viz"] },
                         { "day": 36, "tasks": ["Watch: ResNet & Residual Learning", "Read: ResNet Paper (He et al.)", "Do Math: Gradient flow proof (ResNet)", "Code: Implement ResNet-18 block"] },
@@ -252,8 +257,8 @@
                     ]
                 },
                 {
-                    "week": "WEEK_07",
-                    "theme": "RNN_&_SEQUENCES",
+                    "week": "Week 07",
+                    "theme": "RNN & Sequences",
                     "days": [
                         { "day": 42, "tasks": ["Watch: CS6910 L24 - Intro Sequences", "Do Math: Hidden State recurrence", "Code: Simple RNN Cell in NumPy", "Visual: Unroll RNN on whiteboard"] },
                         { "day": 43, "tasks": ["Watch: CS6910 L25 - BPTT", "Do Math: Derive W_hh gradient", "Code: BPTT for 5 steps (NumPy)", "Read: Karpathy RNN blog"] },
@@ -265,8 +270,8 @@
                     ]
                 },
                 {
-                    "week": "WEEK_08",
-                    "theme": "SEQ2SEQ_&_ATTENTION",
+                    "week": "Week 08",
+                    "theme": "Seq2Seq & Attention",
                     "days": [
                         { "day": 49, "tasks": ["Watch: Encoder-Decoder Arch", "Code: Addition Seq2Seq ('12+5')", "Read: Cho et al. 2014 (GRU)", "Visual: Draw Seq2Seq Bottleneck"] },
                         { "day": 50, "tasks": ["Watch: Attention Mechanism", "Do Math: Softmax-weighted context", "Code: Implement Bahdanau Attention", "Read: Bahdanau 2015 Paper"] },
@@ -278,8 +283,8 @@
                     ]
                 },
                 {
-                    "week": "WEEK_09",
-                    "theme": "TRANSFORMERS_P1",
+                    "week": "Week 09",
+                    "theme": "Transformers P1",
                     "days": [
                         { "day": 56, "tasks": ["Read: 'Attention is All You Need'", "Watch: Illustrated Transformer", "Do Math: Deconstruct Q, K, V", "Code: Multi-head Attention (PyTorch)"] },
                         { "day": 57, "tasks": ["Watch: Transformer Encoder", "Do Math: Why divide by sqrt(d_k)?", "Code: Sine/Cosine Positional Encoding", "Visual: Heatmap of Positional Vecs"] },
@@ -291,8 +296,8 @@
                     ]
                 },
                 {
-                    "week": "WEEK_10",
-                    "theme": "TRANSFORMERS_P2",
+                    "week": "Week 10",
+                    "theme": "Transformers P2",
                     "days": [
                         { "day": 63, "tasks": ["Watch: BERT Pre-training", "Read Paper: BERT (Devlin et al.)", "Code: Load HF BERT model", "Do Math: MLM Loss function"] },
                         { "day": 64, "tasks": ["Watch: GPT & Autoregression", "Read: OpenAI GPT-3 Release blog", "Code: Fine-tune BERT on Sentiment", "Visual: Use BertViz for attention"] },
@@ -304,8 +309,8 @@
                     ]
                 },
                 {
-                    "week": "WEEK_11",
-                    "theme": "SARVAM_AI_ENGINEERING",
+                    "week": "Week 11",
+                    "theme": "Sarvam AI Engineering",
                     "days": [
                         { "day": 70, "tasks": ["Read: Sarvam OpenHathi blog", "Read: OpenHathi Strategy docs", "Code: Compare Hindi vs Eng Tokenizer", "Visual: SentencePiece BPE visualization"] },
                         { "day": 71, "tasks": ["Watch: Large Scale LLM training", "Read: Llama/Mistral architecture", "Do Math: Rotary Embeddings (RoPE)", "Code: Implement RoPE (Simplified)"] },
@@ -317,8 +322,8 @@
                     ]
                 },
                 {
-                    "week": "WEEK_12",
-                    "theme": "ADVANCED_CAPSTONE",
+                    "week": "Week 12",
+                    "theme": "Advanced Capstone",
                     "days": [
                         { "day": 77, "tasks": ["Watch: Multimodal (CLIP)", "Read: CLIP Paper (OpenAI)", "Code: CLIP-based image search", "Visual: Contrastive Loss Matrix"] },
                         { "day": 78, "tasks": ["Watch: Diffusion Models", "Do Math: Forward/Reverse Diffusion", "Code: Stable Diffusion pipeline", "Write Blog: 'Generative AI shift'"] },
@@ -330,8 +335,8 @@
                     ]
                 },
                 {
-                    "week": "WEEK_13",
-                    "theme": "INTERVIEW_READY",
+                    "week": "Week 13",
+                    "theme": "Interview Ready",
                     "days": [
                         { "day": 84, "tasks": ["Watch: CS6910 Summary Review", "Review: Midterm/Endterm papers", "Do Math: Rapid-fire derivations", "Write Blog: 'The 90-Day Journey'"] },
                         { "day": 85, "tasks": ["Mock: 'Challenges in DL Project'", "Mock: Explain Attention to a child", "Code: Review Week 1 NumPy code", "Visual: LinkedIn Progress Post"] },
@@ -344,21 +349,17 @@
             ]
         };
 
-        const MOTIVATION_QUOTES = [
-            "Gradient descent takes time, but every step brings you closer to the global minimum.",
-            "A neural network is only as strong as its training. Keep pushing through the epochs.",
-            "Don't let the vanishing gradient of your motivation stop you today.",
-            "The best way to predict the future is to build it, layer by layer.",
-            "Even the most complex LLMs started as a simple perceptron. You're building that foundation now.",
-            "Your brain is the ultimate neural architecture. It just needs more data and time.",
-            "Optimization isn't about being perfect; it's about being better than you were at the last iteration.",
-            "Success is a sequence of small wins, converged over time.",
-            "The math might be hard, but your resolve is harder.",
-            "In a world of noise, focus on the signal. You are doing great.",
-            "Backpropagation through a 90-day journey is hard, but the rewards are exponential.",
-            "You are the architect of your own intelligence. Keep training.",
-            "The deepest insights come after the hardest training sessions.",
-            "Learning is the most powerful weight update you can give yourself."
+        const ENCOURAGEMENTS = [
+            "You're doing amazing! Meow! 🐾",
+            "Deep learning is just fancy math, and you're the master of it! ✨",
+            "Take a small break, you've earned it! 🐟",
+            "One neuron at a time, you're building a masterpiece! 🧠",
+            "I'm so proud of your progress today! 🌟",
+            "Don't worry about the hard parts, we'll solve them together! 🤝",
+            "You're smarter than an overfitted model! 📈",
+            "Keep going, the view from the top is worth it! 🏔️",
+            "You've got the best neural weights in town! 💪",
+            "Meow! Just wanted to say you're doing great! 🐱"
         ];
 
         const ALL_TASKS = [];
@@ -371,7 +372,6 @@
                         week: week.week,
                         theme: week.theme,
                         dayOffset: day.day,
-                        dayLabel: `DAY_${String(day.day).padStart(2, '0')}`,
                     });
                 });
             });
@@ -390,16 +390,46 @@
             return Math.floor((b - a) / (1000*60*60*24));
         }
 
+        function CatCompanion() {
+            const [quote, setQuote] = useState("");
+            const [showBubble, setShowBubble] = useState(false);
+            const timerRef = useRef(null);
+
+            const handleClick = () => {
+                if (timerRef.current) clearTimeout(timerRef.current);
+                const randomQuote = ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)];
+                setQuote(randomQuote);
+                setShowBubble(true);
+                timerRef.current = setTimeout(() => setShowBubble(false), 3000);
+            };
+
+            return (
+                <div className="cat-container">
+                    <div className="relative">
+                        <div className={`speech-bubble ${showBubble ? 'visible' : ''}`}>
+                            {quote}
+                        </div>
+                        <img 
+                            src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHYyeHExZXF4NXp5eHExZXF4NXp5eHExZXF4NXp5eHExZXF4NXp5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpxV9XG9b5mM/giphy.gif" 
+                            className="cat-body" 
+                            alt="Running Cat"
+                            onClick={handleClick}
+                        />
+                    </div>
+                </div>
+            );
+        }
+
         function App() {
             const [view, setView] = useState('today');
             const [completedTasks, setCompletedTasks] = useState(() => {
-                const saved = localStorage.getItem('cs6910_coder_v2');
+                const saved = localStorage.getItem('cs6910_coder_v3_cozy');
                 return saved ? JSON.parse(saved) : {};
             });
             const [startDate] = useState(() => getStartDate());
 
             const resetStartDate = () => {
-                if (window.confirm("Reset system clock? This will re-initialize your journey from Day 00.")) {
+                if (window.confirm("Want to restart your journey? ✨")) {
                     const d = new Date();
                     d.setHours(0,0,0,0);
                     localStorage.setItem('cs6910_start_date', d.toISOString());
@@ -408,7 +438,7 @@
             };
 
             useEffect(() => {
-                localStorage.setItem('cs6910_coder_v2', JSON.stringify(completedTasks));
+                localStorage.setItem('cs6910_coder_v3_cozy', JSON.stringify(completedTasks));
             }, [completedTasks]);
 
             const toggleTask = (taskId) => {
@@ -432,136 +462,102 @@
             const forwardedCount = todayTasks.filter(t => t.dayOffset < currentOffset).length;
             const strictTodayCount = todayTasks.filter(t => t.dayOffset === currentOffset).length;
 
-            const dailyQuote = useMemo(() => {
-                // Use the day of year or date as seed
-                const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-                return MOTIVATION_QUOTES[dayOfYear % MOTIVATION_QUOTES.length];
-            }, []);
-
             return (
-                <div className="relative min-h-screen p-4 md:p-8 lg:p-12 max-w-6xl mx-auto z-10">
-                    {/* Top Status Bar */}
-                    <div className="flex justify-between items-center mb-8 px-4 mono text-[10px] text-gray-500 uppercase tracking-widest">
-                        <div className="flex items-center gap-4">
-                            <span className="flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></span>
-                                SYSTEM_ACTIVE
-                            </span>
-                            <span>USER: CODER_X</span>
-                        </div>
-                        <div className="flex items-center gap-6">
-                            <span>UPTIME: {currentOffset} DAYS</span>
-                            <button onClick={resetStartDate} className="text-red-400 hover:text-red-300 transition-colors cursor-pointer">
-                                [REBOOT_SYSTEM]
-                            </button>
-                        </div>
-                    </div>
+                <div className="min-h-screen pb-32">
+                    <CatCompanion />
 
-                    {/* Header Card */}
-                    <header className="glass p-8 md:p-10 mb-12 relative overflow-hidden group">
-                        <div className="scanline"></div>
-                        <div className="relative z-10">
-                            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
-                                <div>
-                                    <div className="text-cyan-400 mono text-xs font-bold mb-2 tracking-[0.3em] uppercase">Protocol: Mastery_v3.0</div>
-                                    <h1 className="text-4xl md:text-5xl font-extrabold tracking-tighter mb-4 text-white">
-                                        CS6910 <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">DEEP_LEARNING</span>
-                                    </h1>
-                                    <p className="text-gray-400 max-w-2xl text-lg leading-relaxed">{PLAN_DATA.summary}</p>
+                    <div className="max-w-5xl mx-auto p-6 md:p-12">
+                        {/* Header Area */}
+                        <header className="mb-12">
+                            <div className="flex justify-between items-center mb-10">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-sky-500/20 rounded-xl flex items-center justify-center text-xl">✨</div>
+                                    <h1 className="text-3xl font-extrabold tracking-tight">Study Planner</h1>
                                 </div>
-                                <div className="text-right">
-                                    <div className="mono text-2xl font-bold text-white">{Math.round(progressPercent)}%</div>
-                                    <div className="mono text-[10px] text-gray-500 tracking-widest">OVERALL_SYNC</div>
-                                </div>
-                            </div>
-                            
-                            <div className="space-y-3">
-                                <div className="flex justify-between mono text-[11px] text-gray-400">
-                                    <span>PROGRESS_MAP</span>
-                                    <span>{completedCount} / {totalTasks} NODES_RESOLVED</span>
-                                </div>
-                                <div className="h-2 w-full bg-gray-900/50 rounded-full overflow-hidden border border-white/5 p-[1px]">
-                                    <div className="h-full rounded-full progress-fill" style={{ width: `${progressPercent}%` }} />
-                                </div>
+                                <button 
+                                    onClick={resetStartDate}
+                                    className="text-xs font-bold text-slate-500 hover:text-rose-400 transition-colors uppercase tracking-widest"
+                                >
+                                    Reset Progress
+                                </button>
                             </div>
 
-                            {/* Motivation Section */}
-                            <div className="mt-8 pt-6 border-t border-white/5 mono">
-                                <div className="text-[9px] text-cyan-400/60 mb-2 tracking-[0.2em] flex items-center gap-2">
-                                    <span className="w-1 h-1 bg-cyan-400 rounded-full animate-pulse"></span>
-                                    INBOUND_MOTIVATION_PROTOCOL
-                                </div>
-                                <div className="text-sm text-cyan-100/80 italic leading-relaxed">
-                                    &gt; "{dailyQuote}"
-                                </div>
-                            </div>
-                        </div>
-                    </header>
-
-                    {/* Navigation Tabs */}
-                    <div className="flex gap-2 mb-12 p-1 glass rounded-xl inline-flex w-full md:w-auto">
-                        {[
-                            { id: 'today', label: `MISSION_CONTROL [D${String(currentOffset).padStart(2,'0')}]` },
-                            { id: 'full_plan', label: 'NEURAL_NETWORK_MAP' }
-                        ].map(v => (
-                            <button
-                                key={v.id}
-                                onClick={() => setView(v.id)}
-                                className={`nav-btn px-6 py-3 rounded-lg mono text-[11px] tracking-[0.15em] transition-all cursor-pointer flex-1 md:flex-none ${view === v.id ? 'active text-cyan-400 bg-white/5' : 'text-gray-500 hover:text-gray-300'}`}
-                            >
-                                {view === v.id ? '> ' : ''}{v.label}
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* Content Area */}
-                    <main>
-                        {view === 'today' && (
-                            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                                {/* Stats Row */}
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    {[
-                                        { label: 'ACTIVE_OBJECTIVES', val: strictTodayCount, color: 'text-cyan-400' },
-                                        { label: 'BACKLOG_PENDING', val: forwardedCount, color: forwardedCount > 0 ? 'text-yellow-500' : 'text-gray-500' },
-                                        { label: 'TOTAL_RESOLVED', val: completedCount, color: 'text-purple-400' },
-                                    ].map((s, i) => (
-                                        <div key={i} className="glass p-6 glass-hover transition-all">
-                                            <div className={`text-3xl font-bold mono mb-1 ${s.color}`}>{String(s.val).padStart(2, '0')}</div>
-                                            <div className="text-[10px] text-gray-500 mono tracking-widest uppercase">{s.label}</div>
+                            <div className="card p-8 md:p-10 mb-10 overflow-hidden relative">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-sky-500/10 blur-3xl rounded-full -mr-16 -mt-16"></div>
+                                <div className="relative z-10">
+                                    <h2 className="text-2xl font-bold mb-4">Deep Learning Mastery</h2>
+                                    <p className="text-slate-400 mb-8 max-w-2xl leading-relaxed">{PLAN_DATA.summary}</p>
+                                    
+                                    <div className="space-y-4">
+                                        <div className="flex justify-between text-sm font-bold text-slate-400">
+                                            <span>Course Progress</span>
+                                            <span className="text-sky-400">{Math.round(progressPercent)}% Complete</span>
                                         </div>
-                                    ))}
-                                </div>
-
-                                {/* Task List */}
-                                <div className="glass overflow-hidden">
-                                    <div className="p-4 border-b border-white/5 bg-white/5 mono text-[10px] text-gray-400 tracking-widest flex justify-between">
-                                        <span>CURRENT_QUEUE</span>
-                                        <span>TIMESTAMP: {new Date().toLocaleTimeString()}</span>
+                                        <div className="progress-bar">
+                                            <div className="progress-fill" style={{ width: `${progressPercent}%` }} />
+                                        </div>
+                                        <div className="flex gap-6 text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                            <span>{completedCount} Tasks Done</span>
+                                            <span>{totalTasks - completedCount} Remaining</span>
+                                            <span>Day {currentOffset} of 90</span>
+                                        </div>
                                     </div>
-                                    <div className="p-2">
+                                </div>
+                            </div>
+
+                            {/* Nav */}
+                            <nav className="flex gap-4 p-1 bg-slate-800/50 rounded-2xl w-fit">
+                                <button 
+                                    onClick={() => setView('today')}
+                                    className={`nav-link ${view === 'today' ? 'active' : ''}`}
+                                >
+                                    Today's Goals
+                                </button>
+                                <button 
+                                    onClick={() => setView('full_plan')}
+                                    className={`nav-link ${view === 'full_plan' ? 'active' : ''}`}
+                                >
+                                    Full Roadmap
+                                </button>
+                            </nav>
+                        </header>
+
+                        {/* Content */}
+                        <main>
+                            {view === 'today' && (
+                                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="card p-6">
+                                            <div className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-2">Today's Focus</div>
+                                            <div className="text-2xl font-bold">{strictTodayCount} Tasks</div>
+                                        </div>
+                                        <div className="card p-6">
+                                            <div className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-2">From Previous Days</div>
+                                            <div className="text-2xl font-bold text-amber-400">{forwardedCount} Tasks</div>
+                                        </div>
+                                    </div>
+
+                                    <div className="card overflow-hidden">
                                         {todayTasks.length === 0 ? (
                                             <div className="py-20 text-center">
-                                                <div className="text-cyan-400 mono text-lg mb-2">SEQUENCE_COMPLETE</div>
-                                                <div className="text-gray-500 text-sm">All objectives for today have been synchronized.</div>
+                                                <div className="text-sky-400 text-4xl mb-4">🌈</div>
+                                                <div className="text-xl font-bold mb-2">You're all caught up!</div>
+                                                <p className="text-slate-400">Great job on finishing your goals for today.</p>
                                             </div>
                                         ) : (
-                                            <div className="divide-y divide-white/5">
+                                            <div className="divide-y divide-slate-700/50">
                                                 {todayTasks.map(t => (
                                                     <div
                                                         key={t.id}
                                                         onClick={() => toggleTask(t.id)}
-                                                        className="task-row group flex items-start gap-4 p-5 cursor-pointer"
+                                                        className="task-item flex items-start gap-4 p-6 cursor-pointer"
                                                     >
-                                                        <input type="checkbox" checked={!!completedTasks[t.id]} readOnly className="mt-1" />
-                                                        <div className="flex-1 min-w-0">
-                                                            <div className="text-white text-md font-medium mb-1 group-hover:text-cyan-400 transition-colors">{t.name}</div>
-                                                            <div className="mono text-[9px] flex items-center gap-3">
-                                                                <span className="text-gray-500 uppercase">{t.week} // {t.theme}</span>
-                                                                {t.dayOffset < currentOffset && (
-                                                                    <span className="text-yellow-500 bg-yellow-500/10 px-2 py-0.5 rounded border border-yellow-500/20 glow-pulse">
-                                                                        [CRITICAL_DELAY]
-                                                                    </span>
-                                                                )}
+                                                        <input type="checkbox" checked={!!completedTasks[t.id]} readOnly />
+                                                        <div className="flex-1">
+                                                            <div className="font-semibold text-lg mb-1">{t.name}</div>
+                                                            <div className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                                                {t.week} • {t.theme}
+                                                                {t.dayOffset < currentOffset && <span className="ml-3 text-amber-500">Still Pending</span>}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -570,63 +566,59 @@
                                         )}
                                     </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
 
-                        {view === 'full_plan' && (
-                            <div className="space-y-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                                {PLAN_DATA.weeks.map((week, wIdx) => (
-                                    <section key={wIdx}>
-                                        <div className="flex flex-col md:flex-row md:items-end gap-2 md:gap-6 mb-10 border-b border-white/10 pb-4">
-                                            <h2 className="text-2xl font-bold tracking-tight text-white">{week.week}</h2>
-                                            <span className="text-cyan-400 mono text-xs font-semibold tracking-widest mb-1">// {week.theme}</span>
-                                        </div>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                            {week.days.map((day, dIdx) => (
-                                                <div key={dIdx} className={`glass p-5 transition-all ${day.day === currentOffset ? 'ring-1 ring-cyan-500/50 shadow-[0_0_20px_rgba(6,182,212,0.1)]' : ''}`}>
-                                                    <div className="flex justify-between items-center mb-4">
-                                                        <span className={`mono text-[10px] font-bold ${day.day === currentOffset ? 'text-cyan-400' : 'text-gray-500'}`}>
-                                                            DAY_{String(day.day).padStart(2, '0')}
-                                                        </span>
-                                                        {day.day === currentOffset && <span className="text-[8px] mono bg-cyan-500/10 text-cyan-400 px-1.5 py-0.5 rounded border border-cyan-500/20">LIVE</span>}
+                            {view === 'full_plan' && (
+                                <div className="space-y-16 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                    {PLAN_DATA.weeks.map((week, wIdx) => (
+                                        <section key={wIdx}>
+                                            <div className="flex items-baseline gap-4 mb-8">
+                                                <h3 className="text-2xl font-bold">{week.week}</h3>
+                                                <span className="text-slate-500 font-semibold">• {week.theme}</span>
+                                            </div>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                                {week.days.map((day, dIdx) => (
+                                                    <div key={dIdx} className={`card p-5 ${day.day === currentOffset ? 'ring-2 ring-sky-500/50' : ''}`}>
+                                                        <div className="flex justify-between items-center mb-4">
+                                                            <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Day {String(day.day).padStart(2, '0')}</span>
+                                                            {day.day === currentOffset && <span className="text-[10px] font-bold bg-sky-500/20 text-sky-400 px-2 py-1 rounded-lg">Today</span>}
+                                                        </div>
+                                                        <div className="space-y-3">
+                                                            {day.tasks.map((task, tIdx) => {
+                                                                const taskId = `w${wIdx}-d${dIdx}-t${tIdx}`;
+                                                                const isDone = !!completedTasks[taskId];
+                                                                return (
+                                                                    <div
+                                                                        key={taskId}
+                                                                        onClick={() => toggleTask(taskId)}
+                                                                        className={`flex items-start gap-2 cursor-pointer transition-opacity ${isDone ? 'opacity-30' : ''}`}
+                                                                    >
+                                                                        <div className={`mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 ${isDone ? 'bg-slate-500' : 'bg-sky-400'}`} />
+                                                                        <span className={`text-xs leading-tight font-medium ${isDone ? 'line-through' : ''}`}>{task}</span>
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                        </div>
                                                     </div>
-                                                    <div className="space-y-3">
-                                                        {day.tasks.map((task, tIdx) => {
-                                                            const taskId = `w${wIdx}-d${dIdx}-t${tIdx}`;
-                                                            const isDone = !!completedTasks[taskId];
-                                                            return (
-                                                                <div
-                                                                    key={taskId}
-                                                                    onClick={() => toggleTask(taskId)}
-                                                                    className={`flex items-start gap-3 p-2 rounded-lg cursor-pointer transition-all hover:bg-white/5 ${isDone ? 'opacity-30' : ''}`}
-                                                                >
-                                                                    <input type="checkbox" checked={isDone} readOnly className="mt-0.5 h-3.5 w-3.5" />
-                                                                    <span className={`text-[11px] leading-snug ${isDone ? 'line-through text-gray-500' : 'text-gray-300'}`}>{task}</span>
-                                                                </div>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </section>
-                                ))}
-                            </div>
-                        )}
-                    </main>
+                                                ))}
+                                            </div>
+                                        </section>
+                                    ))}
+                                </div>
+                            )}
+                        </main>
 
-                    <footer className="mt-32 pb-16 text-center mono">
-                        <div className="text-[10px] text-gray-600 tracking-[0.4em] mb-4 uppercase">
-                            Deep Learning Mastery Protocol v3.0.0 // Phase: {Math.floor(currentOffset/7) + 1}/13
-                        </div>
-                        <div className="flex justify-center gap-4 text-[9px] text-gray-700">
-                            <span>ENCRYPTION: AES-256</span>
-                            <span>|</span>
-                            <span>NODE_STATUS: STABLE</span>
-                            <span>|</span>
-                            <span>LAST_SYNC: {new Date().toLocaleDateString()}</span>
-                        </div>
-                    </footer>
+                        <footer className="mt-32 text-center">
+                            <div className="text-slate-500 text-xs font-bold uppercase tracking-[0.3em] mb-4">
+                                Keep Going • You Are Doing Great
+                            </div>
+                            <div className="flex justify-center gap-4 text-[10px] text-slate-600 font-bold uppercase tracking-widest">
+                                <span>Version 4.0.0</span>
+                                <span>•</span>
+                                <span>Last Updated {new Date().toLocaleDateString()}</span>
+                            </div>
+                        </footer>
+                    </div>
                 </div>
             );
         }
